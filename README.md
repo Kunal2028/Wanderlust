@@ -1,7 +1,7 @@
 ## 🏡 Wanderlust – Airbnb Clone
 
 ## 📖 Overview
-**Wanderlust** is a full-stack web application inspired by **Airbnb**, allowing users to explore, create, and book property listings around the world.  
+**Wanderlust** is a full-stack web application , allowing users to explore, create, and book property listings around the world.  
 It is built using **Node.js**, **Express**, **MongoDB**, and **JavaScript**, following the MVC architecture and RESTful API principles.
 
 ---
