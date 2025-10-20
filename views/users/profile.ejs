@@ -1,0 +1,113 @@
+<%- layout("layouts/boilerplate") %>
+
+<style>
+/* Custom CSS for a modern, stylish profile (as provided in the previous step) */
+.glass-card {
+    /* Glassmorphism Key Properties */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    
+    /* Styling */
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+/* Enhancing the Profile Picture */
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid rgba(255, 255, 255, 0.9); /* White ring border */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Tab styling for a modern look */
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+}
+.nav-pills .nav-link {
+    color: #333;
+    transition: background-color 0.3s;
+}
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            
+            <div class="card p-4 mb-4 glass-card text-center">
+                <div class="d-flex flex-column align-items-center">
+                    
+                    <img 
+                        src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" 
+                        alt="<%= user.username %>'s Profile Avatar" 
+                        class="profile-avatar mb-3"
+                    />
+                    
+                    <h2 class="fw-bolder text-dark mb-1">@<%= user.username %></h2>
+                    <p class="text-muted mb-3"><i class="fa-solid fa-map-pin me-1"></i> Wanderlust Traveler</p>
+                    
+                    <div class="d-flex justify-content-center gap-4 mt-2">
+                        <div>
+                            <span class="d-block fw-bold fs-5">12</span>
+                            <small class="text-secondary">Listings</small>
+                        </div>
+                        <div>
+                            <span class="d-block fw-bold fs-5">4.8</span>
+                            <small class="text-secondary">Avg. Rating</small>
+                        </div>
+                    </div>
+
+                    <% if (currentUser && currentUser.username === user.username) { %>
+                        <a href="/users/<%= user.username %>/edit" class="btn btn-outline-primary mt-4 rounded-pill px-4">
+                            <i class="fa-solid fa-pen me-2"></i> Edit Profile
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+            
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pills-info-tab" data-bs-toggle="pill" data-bs-target="#pills-info" type="button" role="tab">
+                        <i class="fa-solid fa-user-check me-1"></i> Personal Info
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-listings-tab" data-bs-toggle="pill" data-bs-target="#pills-listings" type="button" role="tab">
+                        <i class="fa-solid fa-house-chimney me-1"></i> My Listings
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content glass-card p-4" id="pills-tabContent">
+                
+                <div class="tab-pane fade show active" id="pills-info" role="tabpanel" aria-labelledby="pills-info-tab">
+                    <h5 class="fw-bold mb-3 text-primary">Account Details</h5>
+                    <p><strong>Email:</strong> <%= user.email %></p>
+                    <p><strong>Member Since:</strong> <%= user.createdAt ? user.createdAt.toDateString() : 'N/A' %></p>
+                    <p class="text-muted mt-4">
+                        *Email is private and only visible to you.
+                    </p>
+                </div>
+
+                <div class="tab-pane fade" id="pills-listings" role="tabpanel" aria-labelledby="pills-listings-tab">
+                    <h5 class="fw-bold mb-3 text-primary">Listings Created by @<%= user.username %></h5>
+                    <p class="text-muted">
+                        [This section will dynamically display a grid of listings created by this user.]
+                    </p>
+                    <div class="alert alert-info" role="alert">
+                        No listings found for this user yet!
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

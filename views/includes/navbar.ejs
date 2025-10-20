@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-light border-bottom sticky-top p-2" 
+    style="background-color: #f8f9fa; font-family: 'Poppins', sans-serif;">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bolder text-dark me-4" href="/">
+            <i class="fa-solid fa-plane-departure fa-lg text-primary me-1"></i>
+            Wanderlust
+        </a>
+        
+        <button class="navbar-toggler p-1 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon small"></span>
+        </button>
+        
+        <form class="d-none d-lg-flex mx-auto position-relative" role="search" style="flex-grow: 1; max-width: 550px;">
+            <input class="form-control form-control-lg border-0 rounded-pill ps-4 pe-5 shadow-sm" type="search" 
+                    placeholder="Discover new destinations, places..." aria-label="Search" 
+                    style="background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(5px); transition: all 0.2s ease-in-out;">
+            <button class="btn btn-lg position-absolute end-0 top-50 translate-middle-y text-dark" type="submit" 
+                    style="background: transparent; border: none; right: 10px;">
+                <i class="fa-solid fa-magnifying-glass fa-sm"></i>
+            </button>
+        </form>
+        
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            
+            <div class="navbar-nav align-items-lg-center ms-auto">
+                <a class="nav-link fw-medium me-3 text-dark" href="/">Explore</a>
+                <a class="nav-link fw-medium me-3 text-dark" href="/listings">All Listings</a>
+                <% if (currentUser) { %>
+                    <a class="nav-link fw-medium me-3 text-success" href="/listings/new">Add Listing</a>
+                <% } %>
+                
+                <% if (!currentUser) { %>
+                    <a class="nav-link me-3 text-dark" href="/signup">Sign Up</a>
+                    <a class="btn btn-dark rounded-3 px-4 py-2 fw-bold" href="/login" style="background-color: #0d0c22;">Log In</a>
+                <% } else { %>
+    <a class="nav-link fw-bold me-3 text-dark" href="/users/<%= currentUser.username %>">
+        <i class="fa-solid fa-user-circle me-1"></i> <%= currentUser.username %> 
+    </a>
+                    <a class="btn btn-danger rounded-3 px-4 py-2 fw-bold" href="/logout">Log Out</a>
+                <% } %>
+                
+                </div>
+
+        </div>
+    </div>
+</nav>

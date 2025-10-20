@@ -1,0 +1,343 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row justify-content-center my-5">
+    <div class="col-xl-9 col-lg-10 col-md-11">
+        
+        <div class="revolving-border-box rounded-3"> 
+            
+            <div class="card border-0 rounded-3 overflow-hidden position-relative"> 
+                <div class="row g-0"> 
+                    
+                    <div class="col-md-5 p-4 d-flex align-items-center justify-content-center"> 
+                        
+                        <div class="listing-image-container w-100" style="height: 380px;"> 
+                            <img 
+                                src="<%=listing.image.url%>" 
+                                class="img-fluid w-100 h-100 rounded-3 shadow-sm" 
+                                alt="Listing Image" 
+                                style="object-fit: cover; object-position: center;"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="col-md-7 d-flex flex-column justify-content-between p-5 bg-white">
+                        <div>
+                            <div class="mb-4 pb-3 border-bottom">
+                                <h2 class="card-title fw-bold h3 mb-1 text-dark">
+                                    <%=listing.title%>
+                                </h2>
+                                <p class="text-secondary small mt-1">
+                                    <i class="bi bi-geo-alt-fill me-1"></i> <%=listing.location%>, <%=listing.country%>
+                                </p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-3 text-muted">Description</h6>
+                                <p class="card-text text-dark-emphasis">
+                                    <%=listing.description%>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-4 border-top">
+                            <div class="text-start">
+                                 <span class="fw-normal text-secondary small">Price per night</span>
+                                <span class="fw-bolder text-info h2 d-block mt-0 mb-0">
+                                    &#8377;<%=listing.price.toLocaleString("en-In")%>
+                                </span>
+                            </div>
+
+                            <div class="d-flex gap-3">
+                                <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark px-4 shadow-sm">
+                                    <i class="bi bi-pencil-square me-1"></i> Edit
+                                </a>
+                                <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
+                                    <button class="btn btn-outline-danger px-4 shadow-sm">
+                                        <i class="bi bi-trash3 me-1"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr class="my-5">
+
+<div class="row justify-content-center">
+    <div class="col-xl-9 col-lg-10 col-md-11">
+        <h3 class="mb-4 fw-bold text-dark">Guest Reviews</h3>
+        
+        <% if (listing.reviews && listing.reviews.length > 0) { %>
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <% for (let review of listing.reviews) { %>
+                    <% 
+                        // **FIXED: Safely retrieve username or use a default**
+                        const authorUsername = review.author ? review.author.username : 'Guest User';
+                        const avatarInitial = authorUsername.charAt(0).toUpperCase();
+                    %>
+                    <div class="col">
+                        <div class="review-card shadow-sm p-4 h-100 rounded-3">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="avatar me-3 rounded-circle bg-light-subtle d-flex align-items-center justify-content-center text-primary fw-bold">
+                                    <%= avatarInitial %>
+                                </div>
+                                
+                                <div>
+                                    <h6 class="mb-0 fw-bold text-dark"><%= authorUsername %></h6>
+                                    <p class="text-muted small mb-0">Reviewed on <%= review.createdAt.toLocaleDateString() %></p> 
+                                </div>
+                            </div>
+
+                            <div class="rating-display mb-3">
+                                <span class="fw-bolder me-1 h5 text-warning">
+                                    <%= review.rating.toFixed(1) %>
+                                </span>
+                                <span class="text-secondary">
+                                    <% for (let i = 0; i < 5; i++) { %>
+                                        <% if (i < review.rating) { %>
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        <% } else { %>
+                                            <i class="bi bi-star text-warning opacity-50"></i>
+                                        <% } %>
+                                    <% } %>
+                                </span>
+                            </div>
+
+                            <p class="card-text text-dark-emphasis fst-italic">
+                                "<%= review.comment %>"
+                            </p>
+                            
+                            <form class="mt-3 text-end" 
+                                    method="POST" 
+                                    action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
+                                <button class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash-fill"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        <% } else { %>
+            <p class="text-center text-muted fst-italic p-4 border rounded-3 bg-light-subtle">
+                No reviews yet. Be the first to share your experience!
+            </p>
+        <% } %>
+    </div>
+</div>
+
+<hr class="my-5">
+
+<div class="row justify-content-center mb-5">
+    <div class="col-xl-9 col-lg-10 col-md-11">
+        <h4 class="mb-4 fw-bold">Leave a Review</h4>
+        <form method="POST" action="/listings/<%=listing._id%>/reviews" novalidate class="needs-validation review-form p-4 border rounded-3 shadow-sm bg-white">
+            
+            <div class="mb-3">
+                <label for="rating" class="form-label fw-semibold">Rating</label>
+                <div class="d-flex align-items-center">
+                    <input type="range" class="form-range w-50 slider-with-fill" min="1" max="5" step="1" id="rating" name="review[rating]" required value="3">
+                    <span id="rating-value" class="ms-3 fw-bold text-primary">3</span>
+                </div>
+                <div class="invalid-feedback">
+                    Please select a rating.
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="comment" class="form-label fw-semibold">Comments</label>
+                <textarea name="review[comment]" id="comment" class="form-control" rows="5" required></textarea>
+                <div class="invalid-feedback">
+                    Please enter a comment.
+                </div>
+            </div>
+            
+            <button class="btn btn-primary mt-2 shadow-sm">
+                <i class="bi bi-send-fill me-1"></i> Submit Review
+            </button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ratingInput = document.getElementById('rating');
+        const ratingValueSpan = document.getElementById('rating-value');
+        
+        // --- SLIDER FILL LOGIC (New) ---
+        function updateSliderFill() {
+            if (!ratingInput) return;
+            const min = ratingInput.min;
+            const max = ratingInput.max;
+            const val = ratingInput.value;
+            // Calculate percentage from 0% to 100%
+            const percentage = ((val - min) / (max - min)) * 100;
+            
+            // Set CSS background to gradient that fills up to the handle position
+            ratingInput.style.background = `linear-gradient(to right, #007bff 0%, #007bff ${percentage}%, #dee2e6 ${percentage}%, #dee2e6 100%)`;
+            
+            // Update the display value
+            ratingValueSpan.textContent = val;
+        }
+
+        if (ratingInput && ratingValueSpan) {
+            ratingInput.value = 3; // Ensure initial value is set for first run
+            updateSliderFill(); // Set initial state and fill
+            
+            ratingInput.addEventListener('input', updateSliderFill);
+        }
+        // --- END SLIDER FILL LOGIC ---
+
+        // Basic Bootstrap form validation setup
+        (function () {
+          'use strict'
+          var forms = document.querySelectorAll('.needs-validation')
+          Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+              form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                  event.preventDefault()
+                  event.stopPropagation()
+                }
+                form.classList.add('was-validated')
+              }, false)
+            })
+        })()
+    });
+</script>
+
+<style>
+    /* --------------------------------- */
+    /* KEYFRAMES */
+    /* --------------------------------- */
+    
+    @keyframes gradientRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeInSlideUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --------------------------------- */
+    /* REVOLVING BORDER IMPLEMENTATION (Preserved Original CSS) */
+    /* --------------------------------- */
+
+    .revolving-border-box {
+        position: relative;
+        z-index: 0;
+        border-radius: inherit; 
+        overflow: hidden; 
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); 
+        
+        opacity: 0; 
+        animation: fadeInSlideUp 1s ease-out 0.2s forwards;
+    }
+
+    /* 1. The main rotating gradient layer (Pseudo-element :before) */
+    .revolving-border-box:before {
+        content: '';
+        position: absolute;
+        width: 150%; 
+        height: 150%;
+        top: -25%; 
+        left: -25%;
+        
+        background: conic-gradient(
+            #007bff 0%,  
+            #ff7300 25%, 
+            #00ff22 50%, 
+            #ff00b3 75%, 
+            #007bff 100% 
+        );
+        z-index: -1;
+        
+        animation: gradientRotate 6s linear infinite; 
+    }
+
+    /* 2. The Inner White Card (Margin creates the border gap) */
+    .revolving-border-box .card {
+        z-index: 1;
+        position: relative; 
+        margin: 4px; 
+    }
+
+    /* --------------------------------- */
+    /* MODERN REVIEW SECTION STYLES */
+    /* --------------------------------- */
+    
+    .review-card {
+        background-color: #ffffff;
+        border: 1px solid var(--bs-border-color-translucent);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .review-card .avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 1.25rem;
+        border: 2px solid #007bff33; /* Light border matching primary color */
+    }
+
+    /* Star size adjustment */
+    .bi-star-fill, .bi-star {
+        font-size: 0.9rem;
+    }
+
+    /* --------------------------------- */
+    /* DYNAMIC SLIDER STYLES (New) */
+    /* --------------------------------- */
+    
+    .slider-with-fill {
+        /* Removes default appearance for cross-browser consistency */
+        -webkit-appearance: none;
+        appearance: none;
+        height: 8px; /* Track height */
+        border-radius: 5px; /* Track rounded corners */
+        background: #dee2e6; /* Fallback/initial background color */
+        cursor: pointer;
+    }
+
+    /* Styles the thumb/handle */
+    .slider-with-fill::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px; 
+        height: 18px;
+        border-radius: 50%;
+        background: #007bff; /* Blue handle */
+        border: 1px solid #ffffff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        margin-top: -5px; /* Adjust vertically to center on the 8px track */
+        transition: background 0.15s ease-in-out;
+    }
+
+    .slider-with-fill::-moz-range-thumb {
+        width: 18px; 
+        height: 18px;
+        border-radius: 50%;
+        background: #007bff;
+        border: none; 
+    }
+
+    /* Standard Styles */
+    .text-warning {
+        color: #ffc107 !important; 
+    }
+
+    .text-primary, .text-info {
+        color: #007bff !important; 
+    }
+</style>
