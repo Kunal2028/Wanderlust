@@ -1,4 +1,4 @@
-## 🏡 Wanderlust – Airbnb Clone
+## 🏡 Wanderlust 
 
 ## 📖 Overview
 **Wanderlust** is a full-stack web application , allowing users to explore, create, and book property listings around the world.  
